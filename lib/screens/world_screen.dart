@@ -1,4 +1,8 @@
+import 'package:covid_19_tracker/Model/world_states_model.dart';
+import 'package:covid_19_tracker/Services/states_services.dart';
+import 'package:covid_19_tracker/screens/countries_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class WorldStatesScreen extends StatefulWidget {
@@ -28,21 +32,37 @@ class _WorldStatesScreenState extends State<WorldStatesScreen> with TickerProvid
 
   @override
   Widget build(BuildContext context) {
+    StatesServices statesServices = StatesServices();
     return Scaffold(
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
-            
             children: [
               SizedBox(height: MediaQuery.of(context).size.height* 0.01,),
-              PieChart(
-                
-                dataMap: const {
-                  'Total': 20,
-                  'Recovered': 15,
-                  'Deaths':5
+              FutureBuilder(
+                future: statesServices.fetchWorldStatesRecords(), 
+                builder: (context,AsyncSnapshot<WorldStatesModel> snapshot
+                ){
+                  if(!snapshot.hasData){
+                    return Expanded(
+                      child: SpinKitFadingCircle(
+                        color: Colors.white,
+                        controller: _controller,
+                        size: 50,));
+                  }else{
+                    return Column(
+                      children: [
+                        PieChart(
+                          chartRadius: 110,
+                dataMap:  {
+                  'Total': double.parse(snapshot.data!.cases!.toString()),
+                  'Recovered': double.parse(snapshot.data!.recovered!.toString()),
+                  'Deaths':double.parse(snapshot.data!.deaths!.toString())
                 },
+                chartValuesOptions: const ChartValuesOptions(
+                  showChartValuesInPercentage: true
+                ),
                 animationDuration: const Duration(milliseconds: 1200),
                 chartType: ChartType.ring,
                 colorList: colorList,
@@ -54,23 +74,39 @@ class _WorldStatesScreenState extends State<WorldStatesScreen> with TickerProvid
                 child: Card(
                   child: Column(
                     children: [
-                      ReusableRow(title: 'Total', value: '200'),
-                      ReusableRow(title: 'Total', value: '200'),
-                      ReusableRow(title: 'Total', value: '200'),
+                      ReusableRow(title: 'Total Cases', value: snapshot.data!.cases.toString()),
+                      ReusableRow(title: 'Total Recovered', value: snapshot.data!.recovered.toString()),
+                      ReusableRow(title: 'Total Deaths', value: snapshot.data!.deaths.toString()),
+                      ReusableRow(title: 'Active', value: snapshot.data!.active.toString()),
+                      ReusableRow(title: 'Critical', value: snapshot.data!.critical.toString()),
+                      ReusableRow(title: 'Today Cases', value: snapshot.data!.todayCases.toString()),
+                      ReusableRow(title: 'Today Deaths', value: snapshot.data!.todayDeaths.toString()),
+                      ReusableRow(title: 'Today Recovered', value: snapshot.data!.todayRecovered.toString()),
+
                     ],
                   ),
                 ),
               ),
-              Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: const Color(0xff1aa260),
-                  borderRadius: BorderRadius.circular(15)
-                 ),
-                child: const Center(
-                  child: Text('Track Countries'),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> CountriesListScreen()));
+                },
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: const Color(0xff1aa260),
+                    borderRadius: BorderRadius.circular(15)
+                   ),
+                  child: const Center(
+                    child: Text('Track Countries'),
+                  ),
                 ),
               )
+              ],
+            );
+                  }
+                }),
+              
             ],
           ),
         )),
