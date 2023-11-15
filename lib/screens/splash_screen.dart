@@ -20,15 +20,15 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 3), () {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=> const WorldStatesScreen()));
+    Timer(const Duration(seconds: 3), () {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const WorldStatesScreen()));
     });
   }
   @override
   void dispose() {
-    // TODO: implement dispose
-    super.dispose();
     _controller.dispose();
+    super.dispose();
+
   }
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             AnimatedBuilder(
+
               animation: _controller,
+              // ignore: sized_box_for_whitespace
               child: Container(
                 height: 200,
                 width: 200,

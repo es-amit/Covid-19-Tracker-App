@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'dart:convert';
 
 import 'package:covid_19_tracker/Model/world_states_model.dart';
@@ -20,7 +22,6 @@ class StatesServices{
   }
   Future<List<dynamic>> countriesListApi() async{
     var data;
-
     final response = await http.get(Uri.parse(AppUrl.countriesList));
     if(response.statusCode == 200){
       data = jsonDecode(response.body.toString());

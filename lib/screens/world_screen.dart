@@ -20,8 +20,8 @@ class _WorldStatesScreenState extends State<WorldStatesScreen> with TickerProvid
 
     @override
     void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   final colorList = <Color>[
@@ -89,7 +89,7 @@ class _WorldStatesScreenState extends State<WorldStatesScreen> with TickerProvid
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> CountriesListScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const CountriesListScreen()));
                 },
                 child: Container(
                   height: 50,
